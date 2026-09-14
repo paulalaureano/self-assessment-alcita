@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Autodiagnóstico · Navegação Política · Alcitá Advisory</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Lato:ital,wght@0,400;0,700;1,400&display=swap');
+  :root{
+    --navy:#0D1B2A; --teal:#2A9D8F; --coral:#F76C5E; --amber:#F4A261;
+    --offw:#F7F7F3; --white:#ffffff; --gray:#6B7280; --line:#E4E4DE; --tealt:#EAF4F2;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{margin:0; background:var(--offw); color:var(--navy);
+    font-family:'Lato',system-ui,sans-serif; font-size:17px; line-height:1.55; -webkit-font-smoothing:antialiased;}
+  .wrap{max-width:760px; margin:0 auto; padding:48px 22px 80px;}
+  .eyebrow{font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; letter-spacing:.22em; color:var(--teal); margin:0 0 14px;}
+  h1{font-family:'Montserrat',sans-serif; font-weight:700; font-size:34px; line-height:1.12; margin:0 0 8px; color:var(--navy);}
+  h1 .accent{color:var(--coral);}
+  .rule{height:3px; width:64px; background:var(--coral); border:0; margin:22px 0 22px;}
+  .lede{font-size:18px; color:var(--navy); max-width:60ch;}
+  .lede strong{font-weight:700;}
+  .howto{font-size:15px; color:var(--gray); margin-top:14px; max-width:60ch;}
+  .progress-bar{position:sticky; top:0; z-index:10; background:var(--offw); padding:12px 0 10px; margin-top:26px; border-bottom:1px solid var(--line);}
+  .progress-track{height:6px; background:#e7e7e1; border-radius:99px; overflow:hidden;}
+  .progress-fill{height:100%; width:0; background:var(--teal); border-radius:99px; transition:width .3s ease;}
+  .progress-label{font-family:'Montserrat',sans-serif; font-size:12px; letter-spacing:.05em; color:var(--gray); margin-top:6px;}
+  .q{background:var(--white); border:1px solid var(--line); border-radius:14px; padding:22px 22px 18px; margin:16px 0;}
+  .q.unanswered-flag{border-color:var(--coral);}
+  .q-num{font-family:'Montserrat',sans-serif; font-weight:700; font-size:12px; letter-spacing:.12em; color:var(--teal); display:block; margin-bottom:8px;}
+  .q-text{font-size:17.5px; margin:0 0 16px; line-height:1.4;}
+  .scale{display:flex; gap:6px; align-items:stretch;}
+  .scale label{flex:1; position:relative;}
+  .scale input{position:absolute; opacity:0; width:1px; height:1px;}
+  .scale .pill{display:flex; align-items:center; justify-content:center; height:44px; border:1.5px solid #cfd3d1; border-radius:9px;
+    font-family:'Montserrat',sans-serif; font-weight:600; font-size:15px; color:var(--navy); cursor:pointer; transition:all .12s ease; background:var(--white);}
+  .scale label:hover .pill{border-color:var(--teal);}
+  .scale input:checked + .pill{background:var(--teal); border-color:var(--teal); color:#fff;}
+  .scale input:focus-visible + .pill{outline:3px solid var(--amber); outline-offset:2px;}
+  .scale-ends{display:flex; justify-content:space-between; margin-top:7px; font-size:12.5px; color:var(--gray);}
+  .actions{margin-top:30px; text-align:center;}
+  .btn{font-family:'Montserrat',sans-serif; font-weight:700; font-size:16px; letter-spacing:.03em; color:#fff; background:var(--navy);
+    border:0; border-radius:11px; padding:16px 34px; cursor:pointer; transition:opacity .15s, transform .05s;}
+  .btn:hover{opacity:.9;} .btn:active{transform:translateY(1px);}
+  .btn:disabled{opacity:.35; cursor:not-allowed;}
+  .btn.secondary{background:transparent; color:var(--navy); border:1.5px solid var(--navy);}
+  .hint{font-size:14px; color:var(--coral); margin-top:12px; min-height:18px;}
+  .results{display:none;}
+  .results.show{display:block; animation:fade .5s ease;}
+  .gate{display:none;}
+  .gate.show{display:block; animation:fade .5s ease;}
+  .hp{position:absolute !important; left:-9999px !important; top:auto; width:1px; height:1px; overflow:hidden;}
+  .cta{background:var(--tealt); border-radius:14px; padding:26px 22px; margin:10px 0 30px; text-align:center;}
+  .cta .btn{display:inline-block; text-decoration:none;}
+  .sent{border-color:var(--teal) !important; border-style:solid !important;}
+  @keyframes fade{from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:none;}}
+  .res-eyebrow{font-family:'Montserrat',sans-serif; font-weight:700; font-size:13px; letter-spacing:.22em; color:var(--coral); margin:0 0 8px;}
+  .res-title{font-family:'Montserrat',sans-serif; font-weight:700; font-size:28px; margin:0 0 6px;}
+  .res-sub{color:var(--gray); margin:0 0 30px; max-width:56ch;}
+  .dim{margin:0 0 26px; padding-bottom:22px; border-bottom:1px solid var(--line);}
+  .dim:last-of-type{border-bottom:0;}
+  .dim-head{display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap;}
+  .dim-name{font-family:'Montserrat',sans-serif; font-weight:700; font-size:18px; margin:0;}
+  .dim-score{font-family:'Montserrat',sans-serif; font-weight:700; font-size:16px; white-space:nowrap;}
+  .dim-def{font-size:14.5px; color:var(--gray); margin:3px 0 12px;}
+  .track{height:14px; background:#e7e7e1; border-radius:99px; overflow:hidden; position:relative;}
+  .fill{height:100%; width:0; border-radius:99px; transition:width .9s cubic-bezier(.2,.7,.2,1);}
+  .band{display:inline-block; font-family:'Montserrat',sans-serif; font-weight:700; font-size:11px; letter-spacing:.1em; padding:3px 9px; border-radius:99px; margin:14px 0 8px;}
+  .read{font-size:15.5px; margin:0;}
+  .startpin{font-family:'Montserrat',sans-serif; font-weight:700; font-size:11px; letter-spacing:.1em; color:#fff; background:var(--coral); padding:3px 9px; border-radius:99px; margin-left:8px; vertical-align:middle;}
+  .workbook{font-size:14px; color:var(--navy); margin-top:10px;}
+  .workbook b{font-family:'Montserrat',sans-serif; font-weight:700; color:var(--teal);}
+  .startbox{background:var(--tealt); border-left:5px solid var(--coral); border-radius:12px; padding:20px 22px; margin:6px 0 30px;}
+  .startbox .lbl{font-family:'Montserrat',sans-serif; font-weight:700; font-size:12px; letter-spacing:.14em; color:var(--coral); margin:0 0 6px;}
+  .startbox p{margin:0; font-size:16px;}
+  .note{background:var(--white); border:1px dashed #c9d6d2; border-radius:12px; padding:16px 18px; margin:0 0 22px; font-size:14.5px; color:var(--navy);}
+  .note b{font-family:'Montserrat',sans-serif; font-weight:700; font-size:12px; letter-spacing:.1em; color:var(--teal); display:block; margin-bottom:5px;}
+  .hook{background:var(--navy); border-radius:14px; padding:24px 24px; margin:26px 0 14px;}
+  .hook .lbl{font-family:'Montserrat',sans-serif; font-weight:700; font-size:12px; letter-spacing:.14em; color:var(--coral); margin:0 0 8px;}
+  .hook p{margin:0; font-size:16px; line-height:1.6; color:#f1f1ec;}
+  .send{background:var(--white); border:1px solid var(--line); border-radius:14px; padding:24px 22px; margin:0 0 30px;}
+  .send-title{font-family:'Montserrat',sans-serif; font-weight:700; font-size:18px; margin:0 0 4px;}
+  .send-sub{color:var(--gray); font-size:14.5px; margin:0 0 18px;}
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-family:'Montserrat',sans-serif; font-weight:700; font-size:12px; letter-spacing:.08em; color:var(--navy); margin-bottom:6px;}
+  .field input, .field select{width:100%; font-family:'Lato',sans-serif; font-size:16px; color:var(--navy); padding:12px 14px; border:1.5px solid #cfd3d1; border-radius:9px; background:var(--white);}
+  .field input:focus, .field select:focus{outline:none; border-color:var(--teal);}
+  .req{color:var(--coral); font-weight:700;}
+  .opt{font-weight:400; color:var(--gray); letter-spacing:0;}
+  .reqnote{font-size:12.5px; color:var(--gray); margin:2px 0 16px;}
+  .field-row{display:flex; gap:12px;}
+  .field-row .field{flex:1; min-width:0;}
+  @media (max-width:520px){ .field-row{flex-direction:column; gap:0;} }
+  .consent{display:flex; gap:8px; align-items:flex-start; font-size:11px; color:#6b7280; margin:5px 0 14px; cursor:pointer; line-height:1.35;}
+  .consent input{margin-top:2px; width:15px; height:15px; accent-color:var(--teal); flex:0 0 auto;}
+  .send .btn{width:100%;}
+  .status{font-size:14.5px; margin:14px 0 0; min-height:20px;}
+  .status.ok{color:var(--teal); font-weight:700;}
+  .status.err{color:var(--coral);}
+  .privacy{font-size:12.5px; color:var(--gray); margin:14px 0 0;}
+  footer{margin-top:46px; padding-top:20px; border-top:1px solid var(--line); font-size:12.5px; color:var(--gray); text-align:center; line-height:1.7;}
+  @media (max-width:520px){
+    .wrap{padding:34px 16px 64px;} h1{font-size:27px;}
+    .scale{gap:4px;} .scale .pill{height:42px; font-size:14px;}
+    .q-text{font-size:16.5px;}
+  }
+  @media (prefers-reduced-motion:reduce){ *{animation:none !important; transition:none !important;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header id="top">
+    <p class="eyebrow">ALCITÁ ADVISORY · AUTODIAGNÓSTICO</p>
+    <h1>Onde você está no jogo, <span class="accent">antes de jogá-lo.</span></h1>
+    <hr class="rule">
+    <p class="lede">Habilidade política não é manipular. É <strong>inteligência social e integridade em ação</strong>: ler o ambiente, se posicionar e influenciar sem abrir mão de quem você é. Este diagnóstico mede quatro dimensões dessa habilidade e mostra por onde começar.</p>
+  </header>
+
+  <section id="intro">
+    <div class="send">
+      <div class="field-row">
+        <div class="field">
+          <label for="nome">NOME <span class="req">*</span></label>
+          <input id="nome" type="text" autocomplete="name" placeholder="Como você se chama">
+        </div>
+        <div class="field">
+          <label for="cargo">CARGO <span class="req">*</span></label>
+          <select id="cargo">
+            <option value="" disabled selected>Selecione</option>
+            <option>Estagiário(a) ou trainee</option>
+            <option>Analista</option>
+            <option>Especialista ou consultor(a)</option>
+            <option>Coordenador(a) ou supervisor(a)</option>
+            <option>Gerente</option>
+            <option>Diretor(a) ou head</option>
+            <option>C-level (CEO, CFO, CTO e afins)</option>
+            <option>Sócio(a) ou empreendedor(a)</option>
+            <option>Outro</option>
+          </select>
+        </div>
+      </div>
+      <div class="field">
+        <label for="setor">SETOR <span class="req">*</span></label>
+        <select id="setor">
+          <option value="" disabled selected>Selecione</option>
+          <option>Comercial ou vendas</option>
+          <option>Marketing</option>
+          <option>Financeiro ou controladoria</option>
+          <option>Recursos Humanos ou Gente e Gestão</option>
+          <option>Operações ou logística</option>
+          <option>Tecnologia ou TI</option>
+          <option>Produto</option>
+          <option>Jurídico ou compliance</option>
+          <option>Engenharia</option>
+          <option>Atendimento ou CS</option>
+          <option>Consultoria</option>
+          <option>Outro</option>
+        </select>
+      </div>
+      <p class="reqnote"><span class="req">*</span> preenchimento obrigatório</p>
+      <button type="button" class="btn" id="start" disabled>Quero dar o primeiro passo</button>
+    </div>
+  </section>
+
+  <div class="progress-bar" aria-hidden="true" style="display:none">
+    <div class="progress-track"><div class="progress-fill" id="pfill"></div></div>
+    <div class="progress-label" id="plabel">0 de 16 respondidas</div>
+  </div>
+
+  <p class="howto" id="quizintro" style="display:none">Vamos começar! Para cada afirmação abaixo, marque de 1 (discordo totalmente) a 7 (concordo totalmente) o quanto ela descreve você no trabalho hoje. Relaxa que vai ficar entre nós. Então responda rápido e com honestidade: quanto mais real, mais o mapa te representará e os próximos passos serão mais efetivos.</p>
+
+  <form id="form" style="display:none"></form>
+
+  <div class="actions" id="actions" style="display:none">
+    <button type="button" class="btn" id="submit" disabled>Ver meu mapa</button>
+    <p class="hint" id="hint"></p>
+  </div>
+
+  <section class="gate" id="gate" aria-live="polite">
+    <p class="res-eyebrow" style="color:var(--teal)">SEU MAPA ESTÁ PRONTO</p>
+    <h2 class="res-title">Receba seu resultado em instantes!</h2>
+    <p class="res-sub">Parabéns por chegar até aqui. Responder com honestidade já é o primeiro passo do jogo: o autoconhecimento. Preencha seus dados e o seu resultado completo, com o mapa das quatro dimensões e por onde começar, vai direto para o seu e-mail em instantes.</p>
+    <div class="send">
+      <div class="field">
+        <label for="instagram">INSTAGRAM <span class="req">*</span></label>
+        <input id="instagram" type="text" autocapitalize="off" autocorrect="off" spellcheck="false" placeholder="@seuusuario">
+      </div>
+      <div class="field">
+        <label for="email">E-MAIL <span class="req">*</span></label>
+        <input id="email" type="email" autocomplete="email" inputmode="email" placeholder="seu@email.com">
+      </div>
+      <div class="field">
+        <label for="celular">CELULAR <span class="opt">(opcional)</span></label>
+        <input id="celular" type="tel" autocomplete="tel" inputmode="tel" placeholder="(11) 90000-0000">
+      </div>
+      <div class="hp" aria-hidden="true">
+        <label for="empresa_site">Não preencha este campo</label>
+        <input id="empresa_site" type="text" tabindex="-1" autocomplete="off">
+      </div>
+      <p class="reqnote"><span class="req">*</span> preenchimento obrigatório</p>
+      <label class="consent">
+        <input type="checkbox" id="consent1">
+        <span>Autorizo a Alcitá Advisory a usar meus dados para envio de informações (por exemplo: resultado de testes, novidades e evoluções).</span>
+      </label>
+      <label class="consent">
+        <input type="checkbox" id="consent2">
+        <span>Autorizo a Alcitá Advisory a armazenar os dados do diagnóstico de forma agregada para relatórios de pesquisa. Os dados não são repassados a terceiros e posso pedir a exclusão quando quiser.</span>
+      </label>
+      <button type="button" class="btn" id="reveal" disabled>Quero ver meu resultado</button>
+      <p class="status" id="status"></p>
+      <p class="privacy"><b>Dica:</b> se não aparecer na sua caixa de entrada, olhe o spam e marque como "não é spam", assim fica mais fácil de encontrar depois.</p>
+    </div>
+  </section>
+
+  <section class="results" id="results" aria-live="polite">
+    <p class="res-eyebrow">SEU MAPA</p>
+    <h2 class="res-title">As quatro dimensões</h2>
+    <p class="res-sub">Cada barra é a sua média nessa dimensão, de 1 a 7. A cor indica onde você está: <b style="color:var(--coral)">a desenvolver</b>, <b style="color:var(--amber)">em construção</b> ou <b style="color:var(--teal)">força</b>.</p>
+
+    <div id="dims"></div>
+
+    <div class="note">
+      <b>UMA RESSALVA SOBRE SINCERIDADE</b>
+      Na pesquisa original de Ferris, esta é a única dimensão que se mede melhor pela percepção dos outros do que pela sua. Trate seu resultado aqui como uma hipótese a validar pedindo feedback, não como veredito.
+    </div>
+
+    <div class="startbox">
+      <p class="lbl">PONTO DE PARTIDA</p>
+      <p id="starttext"></p>
+    </div>
+
+    <div class="note sent" id="sentnote">
+      <b id="sentlabel">ENVIADO</b>
+      <span id="sentmsg">O seu mapa completo vai para o seu e-mail em instantes.</span>
+    </div>
+
+    <div class="hook">
+      <p class="lbl">A PERGUNTA QUE O NÚMERO NÃO RESPONDE</p>
+      <p>Este mapa mede a força de cada dimensão. Não mede a direção. Dá para ter uma rede forte voltada para quem te adora, e não para quem decide sobre a sua carreira. Dá para influenciar bem entre os seus pares, e não chegar em quem assina a sua próxima promoção. O número fica bonito e o risco continua invisível. Esse desbalanceamento, força apontada para o lado errado, é o que costuma travar carreiras sólidas. Descobrir para onde a sua aponta, e corrigir a mira, é o trabalho da mentoria.</p>
+    </div>
+
+    <div class="cta">
+      <a class="btn" id="ctabtn" href="#" target="_blank" rel="noopener">Quero conversar sobre a mentoria</a>
+    </div>
+
+    <div class="actions">
+      <button type="button" class="btn secondary" id="share">Compartilhar meu resultado</button>
+      <button type="button" class="btn secondary" id="redo">Refazer</button>
+    </div>
+  </section>
+
+  <footer>
+    Itens autorais da Alcitá Advisory, adaptados das quatro dimensões validadas por Ferris et al. (2005), <i>Development and Validation of the Political Skill Inventory</i>.<br>
+    Navegação Política e Posicionamento
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     CONFIGURAÇÃO
+     ENDPOINT: URL da Edge Function do Supabase que grava o lead e
+       dispara o e-mail. Deixe "" para testar o fluxo sem enviar.
+     SITE_URL: destino do botão de conversa (no resultado e no
+       e-mail). Troque pelo link de agendamento quando existir.
+     ============================================================ */
+  var CONFIG = {
+    ENDPOINT: "https://hfbhrsntvpfnkvdvrhkb.supabase.co/functions/v1/enviar-diagnostico",
+    SUPABASE_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmYmhyc250dnBmbmt2ZHZyaGtiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkzMTMxMTYsImV4cCI6MjEwNDg4OTExNn0.lfS4FhOrckuug2pz0Qp6KF9spBOYz4HE-hNzAV5Aob8",
+    SITE_URL: "https://www.alcita.com.br"
+  };
+
+  function getParam(n){ try{ return new URLSearchParams(location.search).get(n)||''; }catch(e){ return ''; } }
+  var ORIGEM = (function(){
+    var o=(getParam('origem')||getParam('o')||'').toLowerCase();
+    if(o==='ig'||o==='insta'||o==='instagram') return 'instagram';
+    if(o==='site'||o==='web') return 'site';
+    return o||'desconhecida';
+  })();
+
+  var DIMS = {
+    astucia:    {name:"Astúcia Social",          def:"Ler o ambiente e as pessoas com precisão.",           wb:"Parte I.A · Leitura de Contexto"},
+    influencia: {name:"Influência Interpessoal",  def:"Ajustar seu estilo para mover as pessoas.",           wb:"Parte II.B · Alavancagem e conversas estratégicas"},
+    rede:       {name:"Capacidade de Rede",       def:"Construir e usar conexões e alianças de propósito.",  wb:"Parte II.A · Mentores e Patrocinadores"},
+    sinceridade:{name:"Sinceridade",              def:"Transmitir integridade e inspirar confiança.",        wb:"Parte I.B · Posicionamento e autenticidade"}
+  };
+
+  var ITEMS = [
+    {d:"astucia",     t:"Percebo com rapidez o clima de uma reunião e ajusto o que digo."},
+    {d:"rede",        t:"Reservo tempo na agenda para me conectar, sem pauta imediata, com pessoas de diferentes níveis e áreas."},
+    {d:"sinceridade", t:"As pessoas me descrevem como íntegro(a) e transparente."},
+    {d:"influencia",  t:"Consigo deixar as pessoas à vontade, até quem chega tenso ou na defensiva."},
+    {d:"astucia",     t:"Numa conversa, percebo o que a pessoa quer de verdade mesmo quando ela diz outra coisa."},
+    {d:"rede",        t:"Se eu precisasse chegar a alguém que decide dois níveis acima de mim ou em outra área, eu saberia por quem."},
+    {d:"influencia",  t:"Falo de um jeito com a diretoria e de outro com o time, sem perder a essência."},
+    {d:"sinceridade", t:"Já tive a chance de fingir ser quem não sou para conseguir o que queria, e não fui por aí."},
+    {d:"astucia",     t:"Se eu tivesse que adivinhar o que falam de mim quando não estou na sala, eu acertaria."},
+    {d:"rede",        t:"Aciono minha rede para destravar coisas quando preciso."},
+    {d:"influencia",  t:"Quando levo uma ideia, ela costuma andar, mesmo quando não sou a pessoa mais sênior na mesa."},
+    {d:"sinceridade", t:"Quando eu ajudo alguém, a pessoa não fica se perguntando o que eu quero em troca."},
+    {d:"astucia",     t:"Identifico quem influencia de verdade uma decisão, além de quem a assina."},
+    {d:"rede",        t:"Tenho aliados com quem posso contar em momentos decisivos."},
+    {d:"influencia",  t:"Consigo criar conexão até com quem, à primeira vista, não tem tantas semelhanças comigo nem com a minha área."},
+    {d:"sinceridade", t:"As pessoas me contam coisas que não contariam para qualquer um."}
+  ];
+
+  var READS = {
+    astucia:{
+      low:"Ponto cego provável. Você pode estar sendo pego(a) de surpresa por movimentos que dava para antecipar.",
+      mid:"Você lê o básico, mas ainda perde sinais sutis. Dá para afinar.",
+      high:"Você enxerga o jogo. Sua vantagem é transformar essa leitura em ação."},
+    influencia:{
+      low:"Sua mensagem pode estar certa e mesmo assim não pegar. O 'como' está custando o 'quê'.",
+      mid:"Você influencia em terreno conhecido; fora dele, trava. Amplie o repertório.",
+      high:"Você convence com naturalidade. Cuide para que isso apareça também para quem decide."},
+    rede:{
+      low:"Você provavelmente conta com o mérito para ser visto(a). Mérito sem rede fica invisível.",
+      mid:"Você tem rede, mas a usa pouco. Conexão que não se aciona não é alavanca.",
+      high:"Sua rede é um ativo. A pergunta é se ela inclui quem tem poder de te promover."},
+    sinceridade:{
+      low:"Atenção: aqui o placar que importa é o dos outros, não o seu. Trate como hipótese a validar.",
+      mid:"Você é visto(a) como confiável em parte. Consistência é o que fecha essa conta.",
+      high:"Confiança é sua base. É ela que torna toda influência sustentável. Proteja-a."}
+  };
+
+  var form = document.getElementById('form');
+  var answered = {};
+  var lastResults = null;
+
+  ITEMS.forEach(function(item, i){
+    var q = document.createElement('div'); q.className='q'; q.id='q'+i;
+    var num = document.createElement('span'); num.className='q-num';
+    num.textContent = 'AFIRMAÇÃO ' + (i+1) + ' DE ' + ITEMS.length; q.appendChild(num);
+    var txt = document.createElement('p'); txt.className='q-text'; txt.textContent=item.t; q.appendChild(txt);
+    var scale = document.createElement('div'); scale.className='scale';
+    scale.setAttribute('role','radiogroup'); scale.setAttribute('aria-label', item.t);
+    for(var v=1; v<=7; v++){
+      var lab=document.createElement('label');
+      var inp=document.createElement('input'); inp.type='radio'; inp.name='q'+i; inp.value=v;
+      (function(idx, el){ el.addEventListener('change', function(){
+        answered[idx]=parseInt(el.value,10);
+        document.getElementById('q'+idx).classList.remove('unanswered-flag'); updateProgress();
+      }); })(i, inp);
+      var pill=document.createElement('span'); pill.className='pill'; pill.textContent=v;
+      lab.appendChild(inp); lab.appendChild(pill); scale.appendChild(lab);
+    }
+    q.appendChild(scale);
+    var ends=document.createElement('div'); ends.className='scale-ends';
+    ends.innerHTML='<span>1 · discordo totalmente</span><span>7 · concordo totalmente</span>'; q.appendChild(ends);
+    form.appendChild(q);
+  });
+
+  function updateProgress(){
+    var n=Object.keys(answered).length, pct=Math.round(n/ITEMS.length*100);
+    document.getElementById('pfill').style.width=pct+'%';
+    document.getElementById('plabel').textContent=n+' de '+ITEMS.length+' respondidas';
+    document.getElementById('submit').disabled=(n<ITEMS.length);
+    if(n===ITEMS.length){ document.getElementById('hint').textContent=''; }
+  }
+  function band(m){ if(m<4) return 'low'; if(m<5.5) return 'mid'; return 'high'; }
+  function bandColor(b){ return b==='low'?'var(--coral)':(b==='mid'?'var(--amber)':'var(--teal)'); }
+  function bandLabel(b){ return b==='low'?'A DESENVOLVER':(b==='mid'?'EM CONSTRUÇÃO':'FORÇA'); }
+
+  function startValid(){
+    var nome=document.getElementById('nome').value.trim();
+    var cargo=document.getElementById('cargo').value;
+    var setor=document.getElementById('setor').value;
+    return !!nome && !!cargo && !!setor;
+  }
+  function refreshStart(){ document.getElementById('start').disabled=!startValid(); }
+  ['nome','cargo','setor'].forEach(function(id){
+    var el=document.getElementById(id);
+    el.addEventListener('input', refreshStart);
+    el.addEventListener('change', refreshStart);
+  });
+  document.getElementById('start').addEventListener('click', function(){
+    if(!startValid()){ return; }
+    document.getElementById('intro').style.display='none';
+    document.querySelector('.progress-bar').style.display='';
+    document.getElementById('quizintro').style.display='';
+    document.getElementById('form').style.display='';
+    document.getElementById('actions').style.display='';
+    document.getElementById('quizintro').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  document.getElementById('submit').addEventListener('click', function(){
+    if(Object.keys(answered).length < ITEMS.length){
+      var first=null;
+      for(var i=0;i<ITEMS.length;i++){ if(answered[i]===undefined){ first=i; break; } }
+      if(first!==null){
+        document.getElementById('q'+first).classList.add('unanswered-flag');
+        document.getElementById('hint').textContent='Faltam respostas. Marque todas as 16 afirmações.';
+        document.getElementById('q'+first).scrollIntoView({behavior:'smooth', block:'center'});
+      }
+      return;
+    }
+    var sums={}, counts={};
+    Object.keys(DIMS).forEach(function(k){ sums[k]=0; counts[k]=0; });
+    ITEMS.forEach(function(item,i){ sums[item.d]+=answered[i]; counts[item.d]++; });
+    var means={};
+    Object.keys(DIMS).forEach(function(k){ means[k]=sums[k]/counts[k]; });
+    var lowestKey=null, lowestVal=99;
+    Object.keys(means).forEach(function(k){ if(means[k]<lowestVal){ lowestVal=means[k]; lowestKey=k; } });
+    lastResults={means:means, lowestKey:lowestKey, lowestVal:lowestVal};
+
+    var container=document.getElementById('dims'); container.innerHTML='';
+    Object.keys(DIMS).forEach(function(k){
+      var m=means[k], b=band(m), col=bandColor(b);
+      var dim=document.createElement('div'); dim.className='dim';
+      var head=document.createElement('div'); head.className='dim-head';
+      var name=document.createElement('p'); name.className='dim-name'; name.textContent=DIMS[k].name;
+      if(k===lowestKey){ var pin=document.createElement('span'); pin.className='startpin'; pin.textContent='COMECE AQUI'; name.appendChild(pin); }
+      var score=document.createElement('span'); score.className='dim-score'; score.style.color=col; score.textContent=m.toFixed(1)+' / 7';
+      head.appendChild(name); head.appendChild(score); dim.appendChild(head);
+      var def=document.createElement('p'); def.className='dim-def'; def.textContent=DIMS[k].def; dim.appendChild(def);
+      var track=document.createElement('div'); track.className='track';
+      var fill=document.createElement('div'); fill.className='fill'; fill.style.background=col; track.appendChild(fill); dim.appendChild(track);
+      var bandEl=document.createElement('span'); bandEl.className='band'; bandEl.style.color='#fff'; bandEl.style.background=col; bandEl.textContent=bandLabel(b); dim.appendChild(bandEl);
+      var read=document.createElement('p'); read.className='read'; read.textContent=READS[k][b]; dim.appendChild(read);
+      var wb=document.createElement('p'); wb.className='workbook'; wb.innerHTML='No workbook: <b>'+DIMS[k].wb+'</b>'; dim.appendChild(wb);
+      container.appendChild(dim);
+      requestAnimationFrame(function(){ requestAnimationFrame(function(){ fill.style.width=(m/7*100)+'%'; }); });
+    });
+
+    document.getElementById('starttext').innerHTML =
+      'Sua menor pontuação está em <b>'+DIMS[lowestKey].name+'</b> ('+lowestVal.toFixed(1)+'/7). '+
+      'Não é um veredito, é onde começar. Abra o workbook em <b>'+DIMS[lowestKey].wb+'</b> e trabalhe essa dimensão primeiro; ela costuma destravar as outras.';
+
+    document.getElementById('form').style.display='none';
+    document.getElementById('actions').style.display='none';
+    document.querySelector('.progress-bar').style.display='none';
+    document.getElementById('top').style.display='none';
+    document.getElementById('gate').classList.add('show');
+    document.getElementById('gate').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  /* ---------- PDF (jsPDF) ---------- */
+  function slug(s){ return (s||'aluno').normalize('NFD').replace(/[^\w]+/g,'_').replace(/^_+|_+$/g,'').slice(0,40) || 'aluno'; }
+  function dateStr(){ return new Date().toISOString().slice(0,10); }
+
+  function isEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+  function setStatus(msg, cls){ var el=document.getElementById('status'); el.textContent=msg; el.className='status '+(cls||''); }
+
+  function normHandle(v){ return (v||'').trim().replace(/^@+/,''); }
+  function isHandle(v){ return /^[A-Za-z0-9._]{1,30}$/.test(v); }
+
+  function enviar(payload){
+    if(!CONFIG.ENDPOINT){ return Promise.resolve({skipped:true}); }
+    return fetch(CONFIG.ENDPOINT, {
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'apikey':CONFIG.SUPABASE_KEY,
+        'Authorization':'Bearer '+CONFIG.SUPABASE_KEY
+      },
+      body:JSON.stringify(payload)
+    }).then(function(r){
+      if(!r.ok){ throw new Error('HTTP '+r.status); }
+      return r.json().catch(function(){ return {}; });
+    });
+  }
+
+  function showResults(email, estado){
+    var msg=document.getElementById('sentmsg');
+    var note=document.getElementById('sentnote');
+    var lab=document.getElementById('sentlabel');
+    if(msg){
+      if(estado==='sent'){
+        if(lab){ lab.textContent='A CAMINHO DO SEU E-MAIL'; }
+        msg.textContent='Pronto! O seu mapa completo está indo agora para '+email+' e chega em instantes. Se não aparecer, confira o spam e marque como "não é spam".';
+      } else if(estado==='saved'){
+        if(lab){ lab.textContent='RECEBIDO'; }
+        msg.textContent='Recebemos as suas respostas! O seu mapa completo está logo abaixo, e o envio para o seu e-mail entra no ar assim que ativarmos essa etapa.';
+        if(note){ note.style.borderColor='var(--amber)'; }
+      } else if(estado==='failed'){
+        if(lab){ lab.textContent='RECEBIDO'; }
+        msg.textContent='O seu mapa está logo abaixo. Tivemos um problema no envio por e-mail; se ele não chegar, fale com a Alcitá.';
+        if(note){ note.style.borderColor='var(--amber)'; }
+      } else {
+        if(lab){ lab.textContent='RECEBIDO'; }
+        msg.textContent='O seu mapa completo está logo abaixo. O envio automático para o seu e-mail entra no ar quando a ferramenta for publicada.';
+        if(note){ note.style.borderColor='var(--amber)'; }
+      }
+    }
+    var cta=document.getElementById('ctabtn'); if(cta){ cta.href=CONFIG.SITE_URL||'#'; }
+    document.getElementById('gate').classList.remove('show');
+    document.getElementById('results').classList.add('show');
+    document.querySelector('#results .res-eyebrow').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function gateValid(){
+    var handle=normHandle(document.getElementById('instagram').value);
+    var email=document.getElementById('email').value.trim();
+    var c1=document.getElementById('consent1').checked;
+    var c2=document.getElementById('consent2').checked;
+    return isHandle(handle) && isEmail(email) && c1 && c2;
+  }
+  function refreshGate(){ document.getElementById('reveal').disabled=!gateValid(); }
+  ['instagram','email','consent1','consent2'].forEach(function(id){
+    var el=document.getElementById(id);
+    el.addEventListener('input', refreshGate);
+    el.addEventListener('change', refreshGate);
+  });
+
+  document.getElementById('reveal').addEventListener('click', function(){
+    if(!lastResults || !gateValid()){ return; }
+    var handle=normHandle(document.getElementById('instagram').value);
+    var email=document.getElementById('email').value.trim();
+    var nome=document.getElementById('nome').value.trim();
+    var cargo=document.getElementById('cargo').value||'';
+    var setor=document.getElementById('setor').value||'';
+    var celular=document.getElementById('celular').value.trim();
+
+    var btn=this; btn.disabled=true;
+    setStatus('Preparando o seu mapa...', '');
+
+    var m=lastResults.means;
+    var respostas={}; for(var i=0;i<ITEMS.length;i++){ respostas['q'+(i+1)]=answered[i]; }
+    var payload={
+      origem: ORIGEM,
+      referrer: document.referrer||'',
+      instagram: '@'+handle,
+      email: email,
+      nome: nome,
+      cargo: cargo,
+      setor: setor,
+      celular: celular,
+      honeypot: (document.getElementById('empresa_site')||{}).value||'',
+      consent_envio: true,
+      consent_pesquisa: true,
+      consent_envio_text: 'Autorizo a Alcitá Advisory a usar meus dados para envio de informações (por exemplo: resultado de testes, novidades e evoluções).',
+      consent_pesquisa_text: 'Autorizo a Alcitá Advisory a armazenar os dados do diagnóstico de forma agregada para relatórios de pesquisa. Os dados não são repassados a terceiros e posso pedir a exclusão quando quiser.',
+      respostas: respostas,
+      medias: {
+        astucia:+m.astucia.toFixed(2), influencia:+m.influencia.toFixed(2),
+        rede:+m.rede.toFixed(2), sinceridade:+m.sinceridade.toFixed(2)
+      },
+      faixas: {
+        astucia:bandLabel(band(m.astucia)), influencia:bandLabel(band(m.influencia)),
+        rede:bandLabel(band(m.rede)), sinceridade:bandLabel(band(m.sinceridade))
+      },
+      comece_aqui: lastResults.lowestKey,
+      comece_aqui_nome: DIMS[lastResults.lowestKey].name,
+      comece_aqui_workbook: DIMS[lastResults.lowestKey].wb,
+      site_url: CONFIG.SITE_URL,
+      user_agent: navigator.userAgent,
+      respondido_em: new Date().toISOString()
+    };
+
+    enviar(payload).then(function(res){
+      var estado='sent';
+      if(res && res.skipped){ estado='skipped'; }
+      else if(res && res.email_enviado===false){ estado='saved'; }
+      showResults(email, estado);
+    }).catch(function(){
+      showResults(email, 'failed');
+    });
+  });
+
+  document.getElementById('share').addEventListener('click', function(){
+    var url=location.origin+location.pathname+'?origem=indicacao';
+    var text='Fiz o autodiagnóstico de Navegação Política da Alcitá e recebi meu mapa das quatro dimensões da habilidade política. Vale fazer o seu:';
+    if(navigator.share){
+      navigator.share({title:'Autodiagnóstico de Navegação Política', text:text, url:url}).catch(function(){});
+    } else {
+      window.open('https://wa.me/?text='+encodeURIComponent(text+' '+url), '_blank');
+    }
+  });
+
+  document.getElementById('redo').addEventListener('click', function(){
+    answered={}; lastResults=null;
+    var inputs=form.querySelectorAll('input[type=radio]');
+    for(var i=0;i<inputs.length;i++){ inputs[i].checked=false; }
+    document.getElementById('nome').value='';
+    document.getElementById('cargo').selectedIndex=0;
+    document.getElementById('setor').selectedIndex=0;
+    document.getElementById('start').disabled=true;
+    document.getElementById('instagram').value=''; document.getElementById('email').value=''; document.getElementById('celular').value='';
+    document.getElementById('consent1').checked=false; document.getElementById('consent2').checked=false;
+    var rb=document.getElementById('reveal'); if(rb){ rb.disabled=true; }
+    setStatus('', '');
+    document.getElementById('results').classList.remove('show');
+    document.getElementById('gate').classList.remove('show');
+    document.getElementById('top').style.display='';
+    document.getElementById('intro').style.display='';
+    document.getElementById('quizintro').style.display='none';
+    document.getElementById('form').style.display='none'; document.getElementById('actions').style.display='none';
+    document.querySelector('.progress-bar').style.display='none';
+    updateProgress();
+    document.getElementById('top').scrollIntoView({behavior:'smooth', block:'start'});
+  });
+
+  updateProgress();
+})();
+</script>
+</body>
+</html>
